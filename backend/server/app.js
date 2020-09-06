@@ -6,15 +6,22 @@ const {
 const express = require("express")
 let app = express()
 const morgan = require("morgan")
+const path = require("path")
 if (NODE_ENV == "development") {
   app.use(morgan("dev"))
 }
+const myRoutes = require("../routes/myRoutes")
 const connectDB = require("../database/db")
 //connect to database
 connectDB()
-app.get("/api", (req, res) => {
-  res.json({ msg: "Welcome to Ecommerce Website" })
-})
+//routes middleware
+app.use("/api", myRoutes)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../../frontend", "build")))
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend", "build", "index.html"))
+  })
+}
 const server = app.listen(process.env.PORT || DEV_PORT, () => {
   console.log(
     `Server is running in ${NODE_ENV} mode on PORT ${
