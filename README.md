@@ -15,7 +15,6 @@
 Hosted on *Heroku*
 
 ## React.js
-[![React js](./assets/react.png "react js")]
 
 #### React is a JavaScript library for building user interfaces. Learn what React is all about on our homepage or in the tutorial.
 
