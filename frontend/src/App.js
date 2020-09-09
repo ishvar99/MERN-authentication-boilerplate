@@ -4,7 +4,7 @@ import "./App.css"
 function App() {
   return (
     <div className="App">
-      <h1>ECOMMERCE WEBSITE</h1>
+      <h1>ECOMMERCE WEBSITE WITH ML AND BLOCKCHAIN</h1>
     </div>
   )
 }
