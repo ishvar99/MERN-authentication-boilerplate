@@ -1,6 +1,13 @@
 import React from "react"
-
-const Loader = (props) => {
-  return <div>Loading...Have Patience!</div>
+import "./Loader.css"
+const Loader = () => {
+  return (
+    <div className="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  )
 }
 export default Loader

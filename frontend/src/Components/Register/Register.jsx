@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react"
-import PropTypes from "prop-types"
+import { useHistory } from "react-router-dom"
 import validator from "validator"
+import { useSelector, useDispatch } from "react-redux"
+import { RegisterUser } from "../../redux/actions/authActions"
 import "./Register.scss"
 import Loader from "../../Components/Loader/Loader"
-const Register = (props) => {
-  // const [loading, setLoading] = useState()
+const Register = () => {
+  const auth = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  const { loading, error, isAuthenticated } = auth
+  let history = useHistory()
   const [inputvalue, setinputvalue] = useState({
     uname: "",
     age: "",
@@ -16,6 +21,19 @@ const Register = (props) => {
     color: "",
     msg: "",
   })
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      history.push("/")
+    }
+    if (error) {
+      seterrorMsg({
+        status: "true",
+        msg: error,
+        color: "danger",
+      })
+    }
+    // eslint-disable-next-line
+  }, [error, isAuthenticated, history])
   const handleChange = (event) => {
     const { name, value } = event.target
     seterrorMsg({
@@ -76,7 +94,7 @@ const Register = (props) => {
       msg: "",
     })
     if (!checkErrors()) {
-      // registerUser(formData)
+      dispatch(RegisterUser(formData))
     }
   }
   useEffect(() => {
@@ -89,7 +107,6 @@ const Register = (props) => {
   }, [])
   return (
     <>
-      {false ? <Loader /> : null}
       <div className="Register">
         <form noValidate onSubmit={handleFormSubmit}>
           {errorMsg.status ? (
@@ -140,8 +157,12 @@ const Register = (props) => {
             />
           </div>
 
-          <button variant="primary" type="submit">
-            Register
+          <button
+            variant="primary"
+            type="submit"
+            style={{ opacity: loading ? "0.7" : "1" }}
+          >
+            {loading ? <Loader /> : "Register"}
           </button>
           <p className="text-muted">
             By continuing, you agree to the Terms and Conditions of Use and
@@ -157,7 +178,5 @@ const Register = (props) => {
     </>
   )
 }
-
-Register.propTypes = {}
 
 export default Register

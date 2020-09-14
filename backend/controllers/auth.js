@@ -4,6 +4,7 @@ const asyncHandler = require("../middlewares/asyncHandler") //avoid using try an
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const sgMail = require("@sendgrid/mail")
+const _ = require("lodash")
 const { sendEmail } = require("../utils/sendEmail")
 const {
   data: {
@@ -11,7 +12,6 @@ const {
     EMAIL_EXPIRE,
     EMAIL_SECRET,
     SENDGRID_API_KEY,
-
     CONFIRM_ACCOUNT_TEMPLATE_ID,
     RESET_PASSWORD_TEMPLATE_ID,
     CONFIRM_ACCOUNT,
@@ -27,16 +27,16 @@ const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken()
   const options = {
     expires: new Date(Date.now() + JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
-    httpOnly: false, //can be read on client side using js (document.cookie)
+    httpOnly: true, //can't be read on client side using js (document.cookie)
   }
   if (process.env.NODE_ENV === "production") {
     options.secure = true
   }
-  user.password = undefined
-
-  res.status(statusCode).cookie("token", token, options).json({
+  const filteredUser = _.pick(user, ["_id", "name"])
+  user.res.cookie("token", token, options)
+  res.status(statusCode).json({
     success: true,
-    user,
+    user: filteredUser,
   })
 }
 // @desc    Register User
@@ -89,9 +89,11 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @desc    Get User
 // @route   GET /api/v1/auth/me
 // @access  private
+
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.currentUser.id)
-  return res.status(200).json({ success: true, data: user })
+  const filteredUser = _.pick(user, ["_id", "name"])
+  return res.status(200).json({ success: true, data: filteredUser })
 })
 
 // @desc    Logout User
@@ -121,16 +123,15 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     user.getResetPasswordToken = undefined
     user.resetPasswordExpire = undefined
     await user.save({ validateBeforeSave: false })
-    return next(new ErrorResponse("failed to send reset password mail", 500))
+    return next(new ErrorResponse("Failed to send reset password mail", 500))
   }
-
-  return res.status(200).json({ success: true, data: user })
+  const filteredUser = _.pick(user, ["_id", "name"])
+  return res.status(200).json({ success: true, data: filteredUser })
 })
 exports.confirmUser = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(req.params.token, EMAIL_SECRET)
   await User.findByIdAndUpdate(decoded.id, { confirmed: true }, { new: true })
-  res.json({ success: true, msg: "account verified" })
-  // return res.redirect('/');
+  return res.json({ success: true, msg: "account verified" })
 })
 
 // @desc    RESET PASSWORD
@@ -151,5 +152,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   user.resetPasswordToken = undefined
   user.resetPasswordExpire = undefined
   await user.save()
+  const filteredUser = _.pick(user, ["_id", "name"])
   sendTokenResponse(user, 200, res)
 })

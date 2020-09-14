@@ -3,14 +3,18 @@ import React from "react"
 import "./App.css"
 import Routing from "./Components/Routing/Routing"
 import Header from "./Components/Header/Header"
+import { Provider } from "react-redux"
+import store from "./redux/store"
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <Routing />
-      </Router>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <Router>
+          <Header />
+          <Routing />
+        </Router>
+      </div>
+    </Provider>
   )
 }
 
