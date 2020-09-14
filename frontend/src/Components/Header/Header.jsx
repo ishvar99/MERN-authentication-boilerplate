@@ -1,12 +1,15 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
+import React, { Fragment, useEffect } from "react"
 import { Navbar, Nav } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { Loader } from "../../Components/Loader/Loader"
-const Header = (props) => {
+import Backdrop from "../../Components/Backdrop/Backdrop"
+import { useSelector, useDispatch } from "react-redux"
+
+const Header = () => {
+  const auth = useSelector((state) => state.auth)
+  const { isAuthenticated } = auth
+  const user = JSON.parse(localStorage.getItem("user"))
   return (
     <>
-      {false ? <Loader /> : null}
       <div className="Header">
         <Navbar
           collapseOnSelect
@@ -26,7 +29,7 @@ const Header = (props) => {
                   Home
                 </Link>
               </li>
-              {true ? (
+              {!user ? (
                 <Fragment>
                   <li className="nav-item">
                     <Link to="/register" className="nav-link">
@@ -43,12 +46,7 @@ const Header = (props) => {
                 <Fragment>
                   <li className="nav-item">
                     <Link to="/" className="nav-link">
-                      Hello, Ishan
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/profile" className="nav-link">
-                      Profile
+                      Hello, {user.name.split(" ")[0]}
                     </Link>
                   </li>
                 </Fragment>

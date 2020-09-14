@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
+import { useSelector, useDispatch } from "react-redux"
+import { useHistory } from "react-router-dom"
 import Loader from "../../Components/Loader/Loader"
 import "./Login.scss"
-const Login = (props) => {
-  // const [loading, setLoading] = useState()
+import { LoginUser } from "../../redux/actions/authActions"
+const Login = () => {
+  const history = useHistory()
+  const auth = useSelector((state) => state.auth)
+  const { loading, error, isAuthenticated } = auth
+  const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     email: "",
     password: "",
@@ -34,10 +39,30 @@ const Login = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    // loginUser(formData)
+    if (!inputvalue.email && !inputvalue.password) {
+      seterrorMsg({
+        status: true,
+        msg: "Please fill in all the details",
+        color: "danger",
+      })
+    } else {
+      dispatch(LoginUser(formData))
+    }
   }
   useEffect(() => {
-    // Clear all the errors,when page is loaded
+    if (isAuthenticated) {
+      history.push("/")
+    }
+    if (error) {
+      seterrorMsg({
+        status: true,
+        msg: error,
+        color: "danger",
+      })
+    }
+  }, [isAuthenticated, error, history])
+  useEffect(() => {
+    // Clear all the errors, when page is loaded
     seterrorMsg({
       status: false,
       color: "",
@@ -46,7 +71,6 @@ const Login = (props) => {
   }, [])
   return (
     <>
-      {false ? <Loader /> : null}
       <div className="Login">
         <form noValidate onSubmit={handleFormSubmit}>
           {errorMsg.status ? (
@@ -88,8 +112,12 @@ const Login = (props) => {
             <h6 className="forgot-password">Forgot password</h6>
           </div>
 
-          <button variant="primary" type="submit">
-            Login
+          <button
+            variant="primary"
+            type="submit"
+            style={{ opacity: loading ? "0.7" : "1" }}
+          >
+            {loading ? <Loader /> : "Login"}
           </button>
           <p className="text-muted">
             By continuing, you agree to the Terms and Conditions of Use and
@@ -105,7 +133,5 @@ const Login = (props) => {
     </>
   )
 }
-
-Login.propTypes = {}
 
 export default Login
