@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { useHistory } from "react-router-dom"
-import Loader from "../../Components/Loader/Loader"
 import "./Login.scss"
+import { Link } from "react-router-dom"
 import { LoginUser } from "../../redux/actions/authActions"
-const Login = () => {
-  const history = useHistory()
+const Login = (props) => {
   const auth = useSelector((state) => state.auth)
-  const { loading, error, isAuthenticated } = auth
+  const { error, isAuthenticated } = auth
   const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     email: "",
@@ -21,11 +19,7 @@ const Login = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target
-    seterrorMsg({
-      status: false,
-      color: "",
-      msg: "",
-    })
+
     setinputvalue({
       ...inputvalue,
       [name]: value,
@@ -51,7 +45,7 @@ const Login = () => {
   }
   useEffect(() => {
     if (isAuthenticated) {
-      history.push("/")
+      props.history.push("/")
     }
     if (error) {
       seterrorMsg({
@@ -59,8 +53,15 @@ const Login = () => {
         msg: error,
         color: "danger",
       })
+      // setTimeout(() => {
+      //   seterrorMsg({
+      //     status: false,
+      //     color: "",
+      //     msg: "",
+      //   })
+      // }, 5000)
     }
-  }, [isAuthenticated, error, history])
+  }, [isAuthenticated, error, props.history])
   useEffect(() => {
     // Clear all the errors, when page is loaded
     seterrorMsg({
@@ -78,7 +79,6 @@ const Login = () => {
               className={` error-div text-${errorMsg.color}`}
               style={{ textAlign: "center" }}
             >
-              <h6>There was a problem</h6>
               <h6>{errorMsg.msg}</h6>
             </div>
           ) : null}
@@ -112,12 +112,8 @@ const Login = () => {
             <h6 className="forgot-password">Forgot password</h6>
           </div>
 
-          <button
-            variant="primary"
-            type="submit"
-            style={{ opacity: loading ? "0.7" : "1" }}
-          >
-            {loading ? <Loader /> : "Login"}
+          <button variant="primary" type="submit">
+            Login
           </button>
           <p className="text-muted">
             By continuing, you agree to the Terms and Conditions of Use and
@@ -126,7 +122,17 @@ const Login = () => {
           <hr />
           <div className="part-2">
             <p>New user!</p>
-            <p>Create you account</p>
+            <Link
+              style={{
+                textDecoration: "none",
+                color: "black",
+
+                fontSize: "14px",
+              }}
+              to="/register"
+            >
+              <p>Create an account!</p>
+            </Link>
           </div>
         </form>
       </div>

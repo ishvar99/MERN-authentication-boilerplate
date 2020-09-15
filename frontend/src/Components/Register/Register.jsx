@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
 import validator from "validator"
 import { useSelector, useDispatch } from "react-redux"
 import { RegisterUser } from "../../redux/actions/authActions"
+import { Link } from "react-router-dom"
 import "./Register.scss"
-import Loader from "../../Components/Loader/Loader"
-const Register = () => {
+const Register = (props) => {
   const auth = useSelector((state) => state.auth)
   const dispatch = useDispatch()
-  const { loading, error, isAuthenticated } = auth
-  let history = useHistory()
+  const { error, isAuthenticated } = auth
   const [inputvalue, setinputvalue] = useState({
     uname: "",
-    age: "",
     email: "",
     password: "",
+    password2: "",
   })
   const [errorMsg, seterrorMsg] = useState({
     status: false,
@@ -22,8 +20,8 @@ const Register = () => {
     msg: "",
   })
   useEffect(() => {
-    if (isAuthenticated && !loading) {
-      history.push("/")
+    if (isAuthenticated) {
+      props.history.push("/")
     }
     if (error) {
       seterrorMsg({
@@ -33,14 +31,10 @@ const Register = () => {
       })
     }
     // eslint-disable-next-line
-  }, [error, isAuthenticated, history])
+  }, [error, isAuthenticated, props.history])
   const handleChange = (event) => {
     const { name, value } = event.target
-    seterrorMsg({
-      status: false,
-      color: "",
-      msg: "",
-    })
+
     setinputvalue({
       ...inputvalue,
       [name]: value,
@@ -49,14 +43,15 @@ const Register = () => {
 
   const formData = {
     name: inputvalue.uname,
-    age: inputvalue.age,
     email: inputvalue.email,
     password: inputvalue.password,
+    password2: inputvalue.password2,
   }
   const checkErrors = () => {
+    console.log(inputvalue.password, inputvalue.password2)
     if (
       inputvalue.uname &&
-      inputvalue.age &&
+      inputvalue.password2 &&
       inputvalue.email &&
       inputvalue.password
     ) {
@@ -65,6 +60,12 @@ const Register = () => {
           seterrorMsg({
             status: true,
             msg: "Password should be atleast 6 characters",
+            color: "danger",
+          })
+        } else if (inputvalue.password !== inputvalue.password2) {
+          seterrorMsg({
+            status: true,
+            msg: "Passwords don't match!",
             color: "danger",
           })
         } else {
@@ -129,15 +130,6 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label>Age</label>
-            <input
-              type="number"
-              name="age"
-              value={inputvalue.age}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group">
             <label>Email</label>
             <input
               type="email"
@@ -156,13 +148,17 @@ const Register = () => {
               onChange={handleChange}
             />
           </div>
-
-          <button
-            variant="primary"
-            type="submit"
-            style={{ opacity: loading ? "0.7" : "1" }}
-          >
-            {loading ? <Loader /> : "Register"}
+          <div className="form-group">
+            <label>Re-type Password</label>
+            <input
+              type="password"
+              name="password2"
+              value={inputvalue.password2}
+              onChange={handleChange}
+            />
+          </div>
+          <button variant="primary" type="submit">
+            Register
           </button>
           <p className="text-muted">
             By continuing, you agree to the Terms and Conditions of Use and
@@ -171,7 +167,17 @@ const Register = () => {
           <hr />
           <div className="part-2">
             <p>Existing user!</p>
-            <p>Login to continue</p>
+            <Link
+              style={{
+                textDecoration: "none",
+                color: "black",
+
+                fontSize: "14px",
+              }}
+              to="/login"
+            >
+              <p>Login to continue!</p>
+            </Link>
           </div>
         </form>
       </div>

@@ -6,6 +6,7 @@ const crypto = require("crypto")
 const sgMail = require("@sendgrid/mail")
 const _ = require("lodash")
 const { sendEmail } = require("../utils/sendEmail")
+require("../services/cache")
 const {
   data: {
     JWT_COOKIE_EXPIRE,
@@ -27,13 +28,13 @@ const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken()
   const options = {
     expires: new Date(Date.now() + JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
-    httpOnly: true, //can't be read on client side using js (document.cookie)
+    httpOnly: false,
   }
   if (process.env.NODE_ENV === "production") {
     options.secure = true
   }
   const filteredUser = _.pick(user, ["_id", "name"])
-  user.res.cookie("token", token, options)
+  res.cookie("token", token, options)
   res.status(statusCode).json({
     success: true,
     user: filteredUser,
@@ -91,7 +92,9 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @access  private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.currentUser.id)
+  const user = await User.findById(req.currentUser.id).cache({
+    key: req.currentUser.id,
+  })
   const filteredUser = _.pick(user, ["_id", "name"])
   return res.status(200).json({ success: true, data: filteredUser })
 })
@@ -152,6 +155,5 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   user.resetPasswordToken = undefined
   user.resetPasswordExpire = undefined
   await user.save()
-  const filteredUser = _.pick(user, ["_id", "name"])
   sendTokenResponse(user, 200, res)
 })
