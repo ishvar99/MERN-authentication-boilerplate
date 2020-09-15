@@ -1,15 +1,26 @@
 import React, { Fragment, useEffect } from "react"
 import { Navbar, Nav } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import Backdrop from "../../Components/Backdrop/Backdrop"
+import { LogoutUser } from "../../redux/actions/authActions"
 import { useSelector, useDispatch } from "react-redux"
-
+import { LoadUser } from "../../redux/actions/authActions"
+import Backdrop from "../../Components/Backdrop/Backdrop"
+import parseCookie from "../../utils/parseCookie"
 const Header = () => {
   const auth = useSelector((state) => state.auth)
-  const { isAuthenticated } = auth
-  const user = JSON.parse(localStorage.getItem("user"))
+  const dispatch = useDispatch()
+  const { loading, user, isAuthenticated } = auth
+  useEffect(() => {
+    async function fetchUser() {
+      await dispatch(LoadUser())
+    }
+    let cookieObject = parseCookie(document.cookie)
+    console.log(cookieObject)
+    if (cookieObject && cookieObject["token"]) fetchUser()
+  }, [])
   return (
     <>
+      {loading ? <Backdrop /> : null}
       <div className="Header">
         <Navbar
           collapseOnSelect
@@ -48,6 +59,15 @@ const Header = () => {
                     <Link to="/" className="nav-link">
                       Hello, {user.name.split(" ")[0]}
                     </Link>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      onClick={() => dispatch(LogoutUser())}
+                      style={{ cursor: "pointer" }}
+                      className="nav-link"
+                    >
+                      Logout
+                    </a>
                   </li>
                 </Fragment>
               )}

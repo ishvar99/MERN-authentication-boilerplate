@@ -9,14 +9,14 @@ exports.isLoggedin = asyncHandler(async (req, res, next) => {
   let token = req.cookies["token"]
   console.log(token)
   if (!token) {
-    return next(new ErrorResponse("Login Failed!", 401))
+    return next(new ErrorResponse("Authentication Failed!", 401))
   }
   try {
     const decoded = jwt.verify(token, JWT_SECRET)
     req.currentUser = await User.findById(decoded.id)
     next()
   } catch (error) {
-    return next(new ErrorResponse("Login Failed!", 401))
+    return next(new ErrorResponse("Authentication Failed!", 401))
   }
 })
 
@@ -26,7 +26,7 @@ exports.isAuthenticated = (req, res, next) => {
 
   if (!checkAuth) {
     return res.status(403).json({
-      error: "Authentication failed",
+      error: "Authentication Failed",
     })
   }
   next()
@@ -35,7 +35,7 @@ exports.isAuthenticated = (req, res, next) => {
 exports.isAdmin = (req, res, next) => {
   if (req.foundUser.role === 0) {
     return res.status(403).json({
-      error: "Access Denied! No admin creds found",
+      error: "Access Denied!",
     })
   }
   next()

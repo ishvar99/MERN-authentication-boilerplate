@@ -13,11 +13,6 @@ const userSchema = new mongoose.Schema(
       min: 3,
       required: [true, "Please provide a name"],
     },
-    age: {
-      type: Number,
-      trim: true,
-      required: [true, "Please provide an age"],
-    },
     email: {
       type: String,
       trim: true,
