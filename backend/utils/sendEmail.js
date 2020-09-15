@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 const sgMail = require("@sendgrid/mail")
 const {
   data: { SENDER_EMAIL },
-} = require("../config/keys")
+} = require("../../backend/config/keys")
 exports.sendEmail = async (url, user, type) => {
   let template_data = {}
   if (type === "confirm_account") {
