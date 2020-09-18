@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import validator from "validator"
-import "./ForgotPassword.scss"
+
 import { ForgotPasswordAction } from "../../redux/actions/authActions"
 const ForgotPassword = (props) => {
   const auth = useSelector((state) => state.auth)
-  const { message } = auth
+  const { message, user } = auth
   const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     email: "",
@@ -31,30 +31,24 @@ const ForgotPassword = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    if (!inputvalue.email) {
+    if (!user && !inputvalue.email) {
       setMsg({
         status: true,
         msg: "Please fill in all the details",
         color: "danger",
       })
-    } else if (!validator.isEmail(inputvalue.email)) {
+    } else if (!user && !validator.isEmail(inputvalue.email)) {
       setMsg({
         status: true,
         msg: "Please provide a valid email",
         color: "danger",
       })
     } else {
-      dispatch(ForgotPasswordAction(formData))
-      setinputvalue({
-        email: "",
-      })
-      // setTimeout(() => {
-      //   setMsg({
-      //     status: false,
-      //     color: "",
-      //     msg: "",
-      //   })
-      // }, 3000)
+      if (user) {
+        dispatch(ForgotPasswordAction({ email: user.email }))
+      } else {
+        dispatch(ForgotPasswordAction(formData))
+      }
     }
   }
   useEffect(() => {
@@ -85,7 +79,7 @@ const ForgotPassword = (props) => {
   }, [])
   return (
     <>
-      <div className="Login">
+      <div className="Form">
         <form noValidate onSubmit={handleFormSubmit}>
           {Msg.status ? (
             <div
@@ -95,6 +89,11 @@ const ForgotPassword = (props) => {
               style={{ textAlign: "center" }}
             >
               <h6>{Msg.msg}</h6>
+              <span
+                onClick={() => setMsg({ status: false, color: "", msg: "" })}
+              >
+                x
+              </span>
             </div>
           ) : null}
 
@@ -105,7 +104,7 @@ const ForgotPassword = (props) => {
             <input
               type="email"
               name="email"
-              value={inputvalue.email}
+              value={user ? user.email : inputvalue.email}
               onChange={handleChange}
             />
           </div>

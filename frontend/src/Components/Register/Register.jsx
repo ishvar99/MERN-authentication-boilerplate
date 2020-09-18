@@ -3,7 +3,7 @@ import validator from "validator"
 import { useSelector, useDispatch } from "react-redux"
 import { RegisterUser } from "../../redux/actions/authActions"
 import { Link } from "react-router-dom"
-import "./Register.scss"
+
 const Register = (props) => {
   const auth = useSelector((state) => state.auth)
   const dispatch = useDispatch()
@@ -108,15 +108,21 @@ const Register = (props) => {
   }, [])
   return (
     <>
-      <div className="Register">
+      <div className="Form">
         <form noValidate onSubmit={handleFormSubmit}>
           {errorMsg.status ? (
             <div
               className={`error-div text-${errorMsg.color}`}
               style={{ textAlign: "center" }}
             >
-              <h6> There was a problem</h6>
               <h6>{errorMsg.msg}</h6>
+              <span
+                onClick={() =>
+                  seterrorMsg({ status: false, color: "", msg: "" })
+                }
+              >
+                x
+              </span>
             </div>
           ) : null}
           <h3>Register</h3>

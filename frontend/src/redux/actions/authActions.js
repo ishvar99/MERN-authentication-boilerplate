@@ -108,7 +108,7 @@ export const ResetPasswordAction = (token, formData, isAuthenticated) => {
       )
       dispatch({
         type: RESET_PASSWORD,
-        // payload: response.data,
+        payload: response.data,
       })
       if (isAuthenticated) dispatch(LogoutUser())
     } catch (error) {
