@@ -9,6 +9,8 @@ import {
   LOGOUT,
   AUTH_ERROR,
   FORGOT_PASSWORD,
+  RESET_PASSWORD,
+  RESET_PASSWORD_ERROR,
 } from "../actions/types"
 const initialState = {
   loading: false,
@@ -69,8 +71,14 @@ export default (state = initialState, action) => {
         message: action.payload,
       }
     }
-    case FORGOT_PASSWORD_ERROR: {
-      console.log(action.payload)
+    case RESET_PASSWORD: {
+      return {
+        ...state,
+        loading: false,
+      }
+    }
+    case FORGOT_PASSWORD_ERROR:
+    case RESET_PASSWORD_ERROR: {
       return {
         ...state,
         loading: false,

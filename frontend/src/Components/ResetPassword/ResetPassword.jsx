@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import validator from "validator"
 import "./ResetPassword.scss"
-// import { ResetPasswordAction } from "../../redux/actions/authActions"
+import { ResetPasswordAction } from "../../redux/actions/authActions"
 const ResetPassword = (props) => {
   const auth = useSelector((state) => state.auth)
-  const { message, isAuthenticated } = auth
+  const { message } = auth
   const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     password: "",
@@ -39,21 +38,30 @@ const ResetPassword = (props) => {
         msg: "Please fill in all the details",
         color: "danger",
       })
+    } else if (inputvalue.password.length < 5) {
+      setMsg({
+        status: true,
+        msg: "Password should be atleast 6 characters",
+        color: "danger",
+      })
+    } else if (inputvalue.password !== inputvalue.password2) {
+      setMsg({
+        status: true,
+        msg: "Passwords don't match!",
+        color: "danger",
+      })
     } else {
-      // dispatch(ForgotPasswordAction(formData))
-      setTimeout(() => {
-        setMsg({
-          status: false,
-          color: "",
-          msg: "",
-        })
-      }, 3000)
+      dispatch(ResetPasswordAction(formData))
+      // setTimeout(() => {
+      //   setMsg({
+      //     status: false,
+      //     color: "",
+      //     msg: "",
+      //   })
+      // }, 3000)
     }
   }
   useEffect(() => {
-    if (isAuthenticated) {
-      props.history.push("/")
-    }
     if (message) {
       console.log(message)
       if (message.data) {
@@ -70,7 +78,7 @@ const ResetPassword = (props) => {
         })
       }
     }
-  }, [isAuthenticated, message, props.history])
+  }, [message, props.history])
   useEffect(() => {
     // Clear all the errors, when page is loaded
     setMsg({

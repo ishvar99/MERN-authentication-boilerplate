@@ -8,6 +8,8 @@ import {
   USER_LOADED,
   AUTH_ERROR,
   FORGOT_PASSWORD_ERROR,
+  RESET_PASSWORD,
+  RESET_PASSWORD_ERROR,
   FORGOT_PASSWORD,
 } from "./types"
 import axios from "axios"
@@ -90,6 +92,26 @@ export const ForgotPasswordAction = (formData) => {
     } catch (error) {
       dispatch({
         type: FORGOT_PASSWORD_ERROR,
+        payload: error.response.data,
+      })
+    }
+  }
+}
+export const ResetPasswordAction = (token, formData) => {
+  return async (dispatch) => {
+    try {
+      dispatch(SetLoading())
+      const response = await axios.post(
+        `/api/v1/auth/resetpassword/${token}`,
+        JSON.stringify(formData)
+      )
+      dispatch({
+        type: RESET_PASSWORD,
+        // payload: response.data,
+      })
+    } catch (error) {
+      dispatch({
+        type: RESET_PASSWORD_ERROR,
         payload: error.response.data,
       })
     }

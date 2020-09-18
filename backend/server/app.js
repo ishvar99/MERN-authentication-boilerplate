@@ -9,7 +9,8 @@ const morgan = require("morgan")
 const errorHandler = require("../middlewares/error")
 const cookieParser = require("cookie-parser")
 const path = require("path")
-if (!process.env.NODE_ENV) {
+const PORT = process.env.PORT || DEV_PORT
+if (!process.env.NODE_ENV === "production") {
   app.use(morgan("dev"))
 }
 const authRoutes = require("../routes/auth")
@@ -17,7 +18,8 @@ const authRoutes = require("../routes/auth")
 const connectDB = require("../database/db")
 //connect to database
 connectDB()
-
+// req.protocol will return https in production
+app.enable("trust proxy")
 // express middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -30,15 +32,15 @@ app.use("/api/v1/auth", authRoutes)
 app.use(errorHandler)
 
 // if in production serve index.html build file as frontend
-if (process.env.NODE_ENV) {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../../frontend", "build")))
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../../frontend", "build", "index.html"))
   })
 }
 
-const server = app.listen(process.env.PORT || DEV_PORT, () => {
-  console.log(`Server is running on PORT ${process.env.PORT || DEV_PORT}`.bold)
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`.bold)
 })
 // Unhandled Expections
 process.on("unhandledRejection", (err) => {
