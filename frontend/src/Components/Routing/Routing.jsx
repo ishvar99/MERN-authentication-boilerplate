@@ -12,9 +12,11 @@ const Routing = () => {
       <Route exact path="/register" component={Register}></Route>
       <Route exact path="/login" component={Login}></Route>
       <Route exact path="/password_reset" component={ForgotPassword}></Route>
-      <Route exact path="/password_reset/:token" component={ResetPassword}>
-        {" "}
-      </Route>
+      <Route
+        exact
+        path="/password_reset/:token"
+        component={ResetPassword}
+      ></Route>
     </Switch>
   )
 }

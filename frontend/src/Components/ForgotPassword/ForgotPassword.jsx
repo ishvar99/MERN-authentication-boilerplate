@@ -4,6 +4,7 @@ import validator from "validator"
 import "./ForgotPassword.scss"
 import { ForgotPasswordAction } from "../../redux/actions/authActions"
 const ForgotPassword = (props) => {
+  console.log(props)
   const auth = useSelector((state) => state.auth)
   const { message, isAuthenticated } = auth
   const dispatch = useDispatch()
@@ -58,9 +59,6 @@ const ForgotPassword = (props) => {
     }
   }
   useEffect(() => {
-    if (isAuthenticated) {
-      props.history.push("/")
-    }
     if (message) {
       console.log(message)
       if (message.data) {
@@ -77,7 +75,7 @@ const ForgotPassword = (props) => {
         })
       }
     }
-  }, [isAuthenticated, message, props.history])
+  }, [message, props.history])
   useEffect(() => {
     // Clear all the errors, when page is loaded
     setMsg({

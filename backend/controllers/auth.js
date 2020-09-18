@@ -139,7 +139,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 exports.confirmUser = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(req.params.token, EMAIL_SECRET)
   await User.findByIdAndUpdate(decoded.id, { confirmed: true }, { new: true })
-  return res.json({ success: true, msg: "account verified" })
+  return res.json({ success: true, msg: "Account verified successfully" })
 })
 
 // @desc    RESET PASSWORD
@@ -155,10 +155,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   })
-  if (!user) return next(new ErrorResponse("invalid token", 400))
+  if (!user) return next(new ErrorResponse("Invalid token", 400))
   user.password = password
   user.resetPasswordToken = undefined
   user.resetPasswordExpire = undefined
   await user.save()
-  sendTokenResponse(user, 200, res)
+  res.json({ success: true, data: "Password updated successfully" })
 })
