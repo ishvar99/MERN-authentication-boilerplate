@@ -118,9 +118,12 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   }
   const resetToken = user.getResetPasswordToken()
   await user.save({ validateBeforeSave: false })
-  const url = `${req.protocol}://${req.get(
-    "host"
-  )}/password_reset/${resetToken}`
+  let url
+  if (process.env.NODE_ENV === "production") {
+    url = `${req.protocol}://${req.get("host")}/password_reset/${resetToken}`
+  } else {
+    url = `${req.protocol}://localhost:3000/password_reset/${resetToken}`
+  }
   try {
     await sendEmail(url, user, RESET_PASSWORD)
   } catch (err) {
