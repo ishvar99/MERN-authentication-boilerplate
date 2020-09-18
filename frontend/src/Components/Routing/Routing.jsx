@@ -1,11 +1,14 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
 import Home from "../Home/Home"
 import Register from "../Register/Register"
 import Login from "../Login/Login"
 import ForgotPassword from "../ForgotPassword/ForgotPassword"
 import ResetPassword from "../ResetPassword/ResetPassword"
 const Routing = () => {
+  // const auth = useSelector((state) => state.auth)
+  // const {isAuthenticated } = auth
   return (
     <Switch>
       <Route exact path="/" component={Home}></Route>

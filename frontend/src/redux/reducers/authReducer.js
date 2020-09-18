@@ -63,7 +63,8 @@ export default (state = initialState, action) => {
         user: null,
       }
     }
-    case FORGOT_PASSWORD: {
+    case FORGOT_PASSWORD:
+    case RESET_PASSWORD: {
       console.log(action.payload)
       return {
         ...state,
@@ -71,12 +72,7 @@ export default (state = initialState, action) => {
         message: action.payload,
       }
     }
-    case RESET_PASSWORD: {
-      return {
-        ...state,
-        loading: false,
-      }
-    }
+
     case FORGOT_PASSWORD_ERROR:
     case RESET_PASSWORD_ERROR: {
       return {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import "./ResetPassword.scss"
+
 import { ResetPasswordAction } from "../../redux/actions/authActions"
 const ResetPassword = (props) => {
   const { match } = props
@@ -55,13 +55,6 @@ const ResetPassword = (props) => {
       dispatch(
         ResetPasswordAction(match.params.token, formData, isAuthenticated)
       )
-      // setTimeout(() => {
-      //   setMsg({
-      //     status: false,
-      //     color: "",
-      //     msg: "",
-      //   })
-      // }, 3000)
     }
   }
   useEffect(() => {
@@ -73,6 +66,9 @@ const ResetPassword = (props) => {
           msg: message.data,
           color: "success",
         })
+        setTimeout(() => {
+          props.history.push("/login")
+        }, 4000)
       } else if (message.error) {
         setMsg({
           status: true,
@@ -92,7 +88,7 @@ const ResetPassword = (props) => {
   }, [])
   return (
     <>
-      <div className="Login">
+      <div className="Form">
         <form noValidate onSubmit={handleFormSubmit}>
           {Msg.status ? (
             <div
@@ -102,6 +98,11 @@ const ResetPassword = (props) => {
               style={{ textAlign: "center" }}
             >
               <h6>{Msg.msg}</h6>
+              <span
+                onClick={() => setMsg({ status: false, color: "", msg: "" })}
+              >
+                x
+              </span>
             </div>
           ) : null}
 

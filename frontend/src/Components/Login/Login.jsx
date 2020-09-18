@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import "./Login.scss"
+
 import { Link } from "react-router-dom"
 import { LoginUser } from "../../redux/actions/authActions"
 const Login = (props) => {
@@ -72,7 +72,7 @@ const Login = (props) => {
   }, [])
   return (
     <>
-      <div className="Login">
+      <div className="Form">
         <form noValidate onSubmit={handleFormSubmit}>
           {errorMsg.status ? (
             <div
@@ -80,6 +80,13 @@ const Login = (props) => {
               style={{ textAlign: "center" }}
             >
               <h6>{errorMsg.msg}</h6>
+              <span
+                onClick={() =>
+                  seterrorMsg({ status: false, color: "", msg: "" })
+                }
+              >
+                x
+              </span>
             </div>
           ) : null}
 
