@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from "react-router-dom"
 import React from "react"
-import "./App.css"
+import "./App.scss"
 import Routing from "./Components/Routing/Routing"
 import Header from "./Components/Header/Header"
 import { Provider } from "react-redux"
