@@ -33,7 +33,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   if (process.env.NODE_ENV === "production") {
     options.secure = true
   }
-  const filteredUser = _.pick(user, ["_id", "name"])
+  const filteredUser = _.pick(user, ["_id", "name", "email"])
   res.cookie("token", token, options)
   res.status(statusCode).json({
     success: true,
@@ -95,7 +95,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.currentUser.id).cache({
     key: req.currentUser.id,
   })
-  const filteredUser = _.pick(user, ["_id", "name"])
+  const filteredUser = _.pick(user, ["_id", "name", "email"])
   return res.status(200).json({ success: true, data: filteredUser })
 })
 
@@ -155,10 +155,20 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   })
-  if (!user) return next(new ErrorResponse("Invalid token", 400))
+  if (!user)
+    return next(
+      new ErrorResponse(
+        "It looks like you clicked on an invalid password reset link",
+        400
+      )
+    )
   user.password = password
   user.resetPasswordToken = undefined
   user.resetPasswordExpire = undefined
   await user.save()
-  res.json({ success: true, data: "Password updated successfully" })
+  res.json({
+    success: true,
+    data:
+      "Password updated successfully! Please login again to continue, redirecting...hold on!",
+  })
 })

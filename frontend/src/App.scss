@@ -1,10 +1,14 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+}
 $text-heading: black;
 $outline-color: darkblue;
 $button-color: darkblue;
 $btn-text-color: white;
 $error-danger: #d9534f;
-
-.Login {
+$success-color: #28a745;
+.Form {
   position: relative;
   display: flex;
   margin: 30px auto;
@@ -39,6 +43,10 @@ $error-danger: #d9534f;
       input:focus {
         outline-color: $outline-color;
       }
+    }
+    .forgot-password {
+      font-size: 14px;
+      float: right;
     }
     .row-div {
       display: flex;
@@ -89,11 +97,35 @@ $error-danger: #d9534f;
       border: 2px solid $error-danger;
       border-radius: 5px;
       padding: 5px 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      h6 {
+        font-size: 14px;
+        text-align: center;
+        margin: auto;
+      }
+      span {
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+    }
+    .success-div {
+      border: 2px solid $success-color;
+      border-radius: 5px;
+      padding: 5px 10px;
       margin-bottom: 20px;
-
+      display: flex;
+      justify-content: space-between;
       h6 {
         font-size: 14px;
         margin: 2px 0;
+      }
+      span {
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
       }
     }
     .part-2 {
@@ -105,6 +137,7 @@ $error-danger: #d9534f;
         font-size: 14px;
       }
     }
+
     hr {
       margin-top: 10px;
       margin-bottom: 5px;
