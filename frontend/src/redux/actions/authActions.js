@@ -14,6 +14,7 @@ import {
 } from "./types"
 import axios from "axios"
 axios.defaults.headers.post["Content-Type"] = "application/json"
+axios.defaults.headers.put["Content-Type"] = "application/json"
 const REGISTER_URL = "/api/v1/auth/register"
 const LOGIN_URL = "/api/v1/auth/login"
 const GET_CURRENT_USER = "/api/v1/auth/me"
@@ -97,11 +98,11 @@ export const ForgotPasswordAction = (formData) => {
     }
   }
 }
-export const ResetPasswordAction = (token, formData) => {
+export const ResetPasswordAction = (token, formData, isAuthenticated) => {
   return async (dispatch) => {
     try {
       dispatch(SetLoading())
-      const response = await axios.post(
+      const response = await axios.put(
         `/api/v1/auth/resetpassword/${token}`,
         JSON.stringify(formData)
       )
@@ -109,6 +110,7 @@ export const ResetPasswordAction = (token, formData) => {
         type: RESET_PASSWORD,
         // payload: response.data,
       })
+      if (isAuthenticated) dispatch(LogoutUser())
     } catch (error) {
       dispatch({
         type: RESET_PASSWORD_ERROR,
