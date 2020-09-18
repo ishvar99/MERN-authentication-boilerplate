@@ -15,7 +15,6 @@ const Header = () => {
       await dispatch(LoadUser())
     }
     let cookieObject = parseCookie(document.cookie)
-    console.log(cookieObject)
     if (cookieObject && cookieObject["token"]) fetchUser()
   }, [])
   return (

@@ -1,7 +1,7 @@
 require("dotenv").config()
 require("colors")
 const {
-  data: { NODE_ENV, DEV_PORT },
+  data: { DEV_PORT },
 } = require("../config/keys")
 const express = require("express")
 let app = express()
@@ -9,7 +9,7 @@ const morgan = require("morgan")
 const errorHandler = require("../middlewares/error")
 const cookieParser = require("cookie-parser")
 const path = require("path")
-if (NODE_ENV == "development") {
+if (!process.env.NODE_ENV) {
   app.use(morgan("dev"))
 }
 const authRoutes = require("../routes/auth")
@@ -30,7 +30,7 @@ app.use("/api/v1/auth", authRoutes)
 app.use(errorHandler)
 
 // if in production serve index.html build file as frontend
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV) {
   app.use(express.static(path.join(__dirname, "../../frontend", "build")))
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../../frontend", "build", "index.html"))
@@ -38,11 +38,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const server = app.listen(process.env.PORT || DEV_PORT, () => {
-  console.log(
-    `Server is running in ${NODE_ENV} mode on PORT ${
-      process.env.PORT || DEV_PORT
-    }`.bold
-  )
+  console.log(`Server is running on PORT ${process.env.PORT || DEV_PORT}`.bold)
 })
 // Unhandled Expections
 process.on("unhandledRejection", (err) => {

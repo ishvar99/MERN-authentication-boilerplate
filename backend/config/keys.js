@@ -1,6 +1,6 @@
 exports.data = {
-  mongoProductionURI: process.env.mongoProductionURI,
-  mongoDevelopmentURI: process.env.mongoDevelopmentURI,
+  mongoProductionURI: process.env.mongoProduction,
+  mongoDevelopmentURI: process.env.mongoDevelopment,
   DEV_PORT: process.env.DEV_PORT,
   NODE_ENV: process.env.NODE_ENV,
   JWT_SECRET: process.env.JWT_SECRET,

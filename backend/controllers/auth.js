@@ -111,15 +111,16 @@ exports.logoutUser = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/auth/forgotpassword
 // @access  public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email })
+  const { email } = req.body
+  const user = await User.findOne({ email })
   if (!user) {
-    return next(new ErrorResponse("email doesn't exists"))
+    return next(new ErrorResponse("Email doesn't exist"))
   }
   const resetToken = user.getResetPasswordToken()
   await user.save({ validateBeforeSave: false })
   const url = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/auth/resetpassword/${resetToken}`
+  )}/password_reset/${resetToken}`
   try {
     await sendEmail(url, user, RESET_PASSWORD)
   } catch (err) {
@@ -128,8 +129,9 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     await user.save({ validateBeforeSave: false })
     return next(new ErrorResponse("Failed to send reset password mail", 500))
   }
-  const filteredUser = _.pick(user, ["_id", "name"])
-  return res.status(200).json({ success: true, data: filteredUser })
+  return res
+    .status(200)
+    .json({ success: true, data: `Reset password link send to ${email}` })
 })
 exports.confirmUser = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(req.params.token, EMAIL_SECRET)
@@ -138,7 +140,7 @@ exports.confirmUser = asyncHandler(async (req, res, next) => {
 })
 
 // @desc    RESET PASSWORD
-// @route   PUT /api/v1/auth/resetpassword
+// @route   PUT /api/v1/auth/resetpassword/:token
 // @access  public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   const { password } = req.body

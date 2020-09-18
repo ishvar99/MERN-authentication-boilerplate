@@ -109,7 +109,16 @@ const Login = (props) => {
               <input type="checkbox" />
               <h6 className="">Remember me</h6>
             </div>
-            <h6 className="forgot-password">Forgot password</h6>
+            <Link
+              to="/password_reset"
+              style={{
+                textDecoration: "none",
+                color: "black",
+                fontSize: "14px",
+              }}
+            >
+              <h6 className="forgot-password">Forgot password</h6>
+            </Link>
           </div>
 
           <button variant="primary" type="submit">
