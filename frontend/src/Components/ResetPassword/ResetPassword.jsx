@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from "react-redux"
 import "./ResetPassword.scss"
 import { ResetPasswordAction } from "../../redux/actions/authActions"
 const ResetPassword = (props) => {
+  const { match } = props
   const auth = useSelector((state) => state.auth)
-  const { message } = auth
+  const { message, isAuthenticated } = auth
   const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     password: "",
@@ -51,7 +52,9 @@ const ResetPassword = (props) => {
         color: "danger",
       })
     } else {
-      dispatch(ResetPasswordAction(formData))
+      dispatch(
+        ResetPasswordAction(match.params.token, formData, isAuthenticated)
+      )
       // setTimeout(() => {
       //   setMsg({
       //     status: false,
@@ -116,7 +119,7 @@ const ResetPassword = (props) => {
           <div className="form-group">
             <label>Retype new password</label>
             <input
-              type="password2"
+              type="password"
               name="password2"
               value={inputvalue.password2}
               onChange={handleChange}

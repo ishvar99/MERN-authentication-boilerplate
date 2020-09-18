@@ -7,7 +7,6 @@ const {
 } = require("../config/keys")
 exports.isLoggedin = asyncHandler(async (req, res, next) => {
   let token = req.cookies["token"]
-  console.log(token)
   if (!token) {
     return next(new ErrorResponse("Authentication Failed!", 401))
   }

@@ -4,9 +4,8 @@ import validator from "validator"
 import "./ForgotPassword.scss"
 import { ForgotPasswordAction } from "../../redux/actions/authActions"
 const ForgotPassword = (props) => {
-  console.log(props)
   const auth = useSelector((state) => state.auth)
-  const { message, isAuthenticated } = auth
+  const { message } = auth
   const dispatch = useDispatch()
   const [inputvalue, setinputvalue] = useState({
     email: "",
