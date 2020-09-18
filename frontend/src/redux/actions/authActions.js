@@ -7,18 +7,21 @@ import {
   LOGOUT,
   USER_LOADED,
   AUTH_ERROR,
+  FORGOT_PASSWORD_ERROR,
+  FORGOT_PASSWORD,
 } from "./types"
 import axios from "axios"
 axios.defaults.headers.post["Content-Type"] = "application/json"
 const REGISTER_URL = "/api/v1/auth/register"
 const LOGIN_URL = "/api/v1/auth/login"
 const GET_CURRENT_USER = "/api/v1/auth/me"
+const FORGOT_PASSWORD_URL = "/api/v1/auth/forgotpassword"
 export const LoadUser = () => {
   return async (dispatch) => {
     try {
       dispatch(SetLoading())
       const response = await axios.get(GET_CURRENT_USER)
-      console.log("helo")
+
       dispatch({ type: USER_LOADED, payload: response.data })
     } catch (error) {
       dispatch({ type: AUTH_ERROR, payload: error.response.data.err })
@@ -64,10 +67,31 @@ export const RegisterUser = (formData) => {
 export const LogoutUser = () => {
   return async (dispatch) => {
     try {
+      dispatch(SetLoading())
       await axios.get("/api/v1/auth/logout")
       dispatch({ type: LOGOUT })
     } catch (error) {
       console.log(error)
+    }
+  }
+}
+export const ForgotPasswordAction = (formData) => {
+  return async (dispatch) => {
+    try {
+      dispatch(SetLoading())
+      const response = await axios.post(
+        FORGOT_PASSWORD_URL,
+        JSON.stringify(formData)
+      )
+      dispatch({
+        type: FORGOT_PASSWORD,
+        payload: response.data,
+      })
+    } catch (error) {
+      dispatch({
+        type: FORGOT_PASSWORD_ERROR,
+        payload: error.response.data,
+      })
     }
   }
 }

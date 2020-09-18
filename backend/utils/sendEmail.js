@@ -23,5 +23,5 @@ exports.sendEmail = async (url, user, type) => {
     dynamic_template_data: template_data,
   }
   await sgMail.send(msg)
-  console.log(`Account confirmation mail sent to ${user.email}`.cyan.bold)
+  console.log(`Mail sent to ${user.email}`.cyan.bold)
 }

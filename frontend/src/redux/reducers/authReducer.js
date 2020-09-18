@@ -5,13 +5,16 @@ import {
   LOGIN_FAIL,
   REGISTER_FAIL,
   USER_LOADED,
-  AUTH_ERROR,
+  FORGOT_PASSWORD_ERROR,
   LOGOUT,
+  AUTH_ERROR,
+  FORGOT_PASSWORD,
 } from "../actions/types"
 const initialState = {
   loading: false,
   error: null,
   isAuthenticated: false,
+  message: null,
   user: null,
 }
 export default (state = initialState, action) => {
@@ -56,6 +59,22 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loading: false,
         user: null,
+      }
+    }
+    case FORGOT_PASSWORD: {
+      console.log(action.payload)
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
+      }
+    }
+    case FORGOT_PASSWORD_ERROR: {
+      console.log(action.payload)
+      return {
+        ...state,
+        loading: false,
+        message: action.payload,
       }
     }
     default:
