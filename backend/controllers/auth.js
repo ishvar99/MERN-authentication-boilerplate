@@ -33,7 +33,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   if (process.env.NODE_ENV === "production") {
     options.secure = true
   }
-  const filteredUser = _.pick(user, ["_id", "name", "email"])
+  const filteredUser = _.pick(user, ["_id", "name", "email", "confirmed"])
   res.cookie("token", token, options)
   res.status(statusCode).json({
     success: true,
@@ -92,10 +92,11 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @access  private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.currentUser.id).cache({
-    key: req.currentUser.id,
-  })
-  const filteredUser = _.pick(user, ["_id", "name", "email"])
+  const user = await User.findById(req.currentUser.id)
+  // .cache({
+  //   key: req.currentUser.id,
+  // })
+  const filteredUser = _.pick(user, ["_id", "name", "email", "confirmed"])
   return res.status(200).json({ success: true, data: filteredUser })
 })
 
