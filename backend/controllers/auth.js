@@ -139,7 +139,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 exports.confirmUser = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(req.params.token, EMAIL_SECRET)
   await User.findByIdAndUpdate(decoded.id, { confirmed: true }, { new: true })
-  return res.json({ success: true, msg: "Account verified successfully" })
+  // return res.json({ success: true, msg: "Account verified successfully" })
+  return res.redirect("http://localhost:3000/")
 })
 
 // @desc    RESET PASSWORD

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import validator from "validator"
-
+import { ClearMessage } from "../../redux/actions/authActions"
 import { ForgotPasswordAction } from "../../redux/actions/authActions"
 const ForgotPassword = (props) => {
   const auth = useSelector((state) => state.auth)
@@ -44,11 +44,10 @@ const ForgotPassword = (props) => {
         color: "danger",
       })
     } else {
-      if (user) {
-        dispatch(ForgotPasswordAction({ email: user.email }))
-      } else {
-        dispatch(ForgotPasswordAction(formData))
-      }
+      dispatch(ClearMessage())
+      user
+        ? dispatch(ForgotPasswordAction({ email: user.email }))
+        : dispatch(ForgotPasswordAction(formData))
     }
   }
   useEffect(() => {

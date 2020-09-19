@@ -15,6 +15,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === "ValidationError") {
     let message = Object.values(err.errors).map((e) => e.message)
     error = new ErrorResponse(message, 400)
+  } else if (err.name === "MongooseServerSelectionError") {
+    let message = "Server Error"
+    error = new ErrorResponse(message, 500)
   }
   res.status(error.statusCode || 500).json({
     success: false,

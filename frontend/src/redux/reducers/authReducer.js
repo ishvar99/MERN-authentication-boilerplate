@@ -11,6 +11,8 @@ import {
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   RESET_PASSWORD_ERROR,
+  CLEAR_ERROR,
+  CLEAR_MESSAGE,
 } from "../actions/types"
 const initialState = {
   loading: false,
@@ -79,6 +81,18 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         message: action.payload,
+      }
+    }
+    case CLEAR_ERROR: {
+      return {
+        ...state,
+        error: null,
+      }
+    }
+    case CLEAR_MESSAGE: {
+      return {
+        ...state,
+        message: null,
       }
     }
     default:

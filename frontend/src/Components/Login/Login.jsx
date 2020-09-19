@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 
 import { Link } from "react-router-dom"
 import { LoginUser } from "../../redux/actions/authActions"
+import { ClearError } from "../../redux/actions/authActions"
 const Login = (props) => {
   const auth = useSelector((state) => state.auth)
   const { error, isAuthenticated } = auth
@@ -30,16 +31,21 @@ const Login = (props) => {
     email: inputvalue.email,
     password: inputvalue.password,
   }
-
+  const checkErrors = () => {
+    if (inputvalue.email && inputvalue.password) {
+      return false
+    }
+    seterrorMsg({
+      status: true,
+      msg: "Please fill in all the details",
+      color: "danger",
+    })
+    return true
+  }
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    if (!inputvalue.email && !inputvalue.password) {
-      seterrorMsg({
-        status: true,
-        msg: "Please fill in all the details",
-        color: "danger",
-      })
-    } else {
+    if (!checkErrors()) {
+      dispatch(ClearError())
       dispatch(LoginUser(formData))
     }
   }
@@ -53,13 +59,6 @@ const Login = (props) => {
         msg: error,
         color: "danger",
       })
-      // setTimeout(() => {
-      //   seterrorMsg({
-      //     status: false,
-      //     color: "",
-      //     msg: "",
-      //   })
-      // }, 5000)
     }
   }, [isAuthenticated, error, props.history])
   useEffect(() => {

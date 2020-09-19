@@ -11,6 +11,8 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_ERROR,
   FORGOT_PASSWORD,
+  CLEAR_ERROR,
+  CLEAR_MESSAGE,
 } from "./types"
 import axios from "axios"
 axios.defaults.headers.post["Content-Type"] = "application/json"
@@ -125,5 +127,16 @@ export const SetLoading = () => {
       type: SET_LOADING,
       payload: true,
     })
+  }
+}
+
+export const ClearError = () => {
+  return async (dispatch) => {
+    dispatch({ type: CLEAR_ERROR })
+  }
+}
+export const ClearMessage = () => {
+  return async (dispatch) => {
+    dispatch({ type: CLEAR_MESSAGE })
   }
 }
