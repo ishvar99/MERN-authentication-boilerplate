@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-
+import { ClearMessage } from "../../redux/actions/authActions"
 import { ResetPasswordAction } from "../../redux/actions/authActions"
 const ResetPassword = (props) => {
   const { match } = props
@@ -52,6 +52,7 @@ const ResetPassword = (props) => {
         color: "danger",
       })
     } else {
+      dispatch(ClearMessage())
       dispatch(
         ResetPasswordAction(match.params.token, formData, isAuthenticated)
       )

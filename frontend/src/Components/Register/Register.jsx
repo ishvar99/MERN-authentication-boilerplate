@@ -3,7 +3,7 @@ import validator from "validator"
 import { useSelector, useDispatch } from "react-redux"
 import { RegisterUser } from "../../redux/actions/authActions"
 import { Link } from "react-router-dom"
-
+import { ClearError } from "../../redux/actions/authActions"
 const Register = (props) => {
   const auth = useSelector((state) => state.auth)
   const dispatch = useDispatch()
@@ -26,7 +26,7 @@ const Register = (props) => {
     if (error) {
       seterrorMsg({
         status: "true",
-        msg: error,
+        msg: error === "Duplicate Key Error" ? "Email already exists" : error,
         color: "danger",
       })
     }
@@ -48,7 +48,6 @@ const Register = (props) => {
     password2: inputvalue.password2,
   }
   const checkErrors = () => {
-    console.log(inputvalue.password, inputvalue.password2)
     if (
       inputvalue.uname &&
       inputvalue.password2 &&
@@ -89,12 +88,8 @@ const Register = (props) => {
   }
   const handleFormSubmit = async (event) => {
     event.preventDefault()
-    seterrorMsg({
-      status: false,
-      color: "",
-      msg: "",
-    })
     if (!checkErrors()) {
+      dispatch(ClearError())
       dispatch(RegisterUser(formData))
     }
   }

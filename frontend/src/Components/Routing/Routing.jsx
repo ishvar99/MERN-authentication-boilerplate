@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
+// import { useSelector, useDispatch } from "react-redux"
 import Home from "../Home/Home"
 import Register from "../Register/Register"
 import Login from "../Login/Login"
