@@ -1,15 +1,15 @@
-import React from "react"
+import React, { Fragment } from "react"
 // import PropTypes from "prop-types"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 const Home = (props) => {
   const auth = useSelector((state) => state.auth)
   const { user } = auth
   return (
     <>
-      {user && !user.confirmed && (
+      {user && !user.confirmed ? (
         <div
           style={{ textAlign: "center" }}
-          class="alert alert-warning alert-dismissible fade show"
+          className="alert alert-warning alert-dismissible fade show"
           role="alert"
         >
           Confirmation mail send to{" "}
@@ -17,14 +17,14 @@ const Home = (props) => {
           account to get started.
           <button
             type="button"
-            class="close"
+            className="close"
             data-dismiss="alert"
             aria-label="Close"
           >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-      )}
+      ) : null}
     </>
   )
 }
