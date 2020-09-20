@@ -54,9 +54,13 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       expiresIn: EMAIL_EXPIRE,
     },
     (err, emailToken) => {
-      const url = `${req.protocol}://${req.get(
-        "host"
-      )}/api/v1/auth/confirmation/${emailToken}`
+      let url =
+        process.env.NODE_ENV === "production"
+          ? `${req.protocol}://${req.get(
+              "host"
+            )}/api/v1/auth/confirmation/${emailToken}`
+          : `${req.protocol}://localhost:5000/api/v1/auth/confirmation/${emailToken}`
+
       try {
         sendEmail(url, user, CONFIRM_ACCOUNT)
       } catch (err) {
@@ -119,12 +123,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   }
   const resetToken = user.getResetPasswordToken()
   await user.save({ validateBeforeSave: false })
-  let url
-  if (process.env.NODE_ENV === "production") {
-    url = `${req.protocol}://${req.get("host")}/password_reset/${resetToken}`
-  } else {
-    url = `${req.protocol}://localhost:3000/password_reset/${resetToken}`
-  }
+  let url =
+    process.env.NODE_ENV === "production"
+      ? `${req.protocol}://${req.get("host")}/password_reset/${resetToken}`
+      : `${req.protocol}://localhost:3000/password_reset/${resetToken}`
   try {
     await sendEmail(url, user, RESET_PASSWORD)
   } catch (err) {
@@ -141,7 +143,9 @@ exports.confirmUser = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(req.params.token, EMAIL_SECRET)
   await User.findByIdAndUpdate(decoded.id, { confirmed: true }, { new: true })
   // return res.json({ success: true, msg: "Account verified successfully" })
-  return res.redirect("http://localhost:3000/")
+  return process.env.NODE_ENV === "production"
+    ? res.redirect(`${req.protocol}://${req.get("host")}`)
+    : res.redirect("http://localhost:3000/")
 })
 
 // @desc    RESET PASSWORD
