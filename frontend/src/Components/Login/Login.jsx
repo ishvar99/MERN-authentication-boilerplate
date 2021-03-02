@@ -161,7 +161,9 @@ const Login = (props) => {
               to="/register"
             >
               <p>Create an account!</p>
-              <div style={{fontWeight:'500'}}>Or</div>
+            </Link>
+          </div>
+          <div style={{fontWeight:'500'}}>Or</div>
           <GoogleLogin 
     clientId="17398736997-lr6su6hfveu96ir3vgviuqanmb51a9t7.apps.googleusercontent.com"
     render={props=>(
@@ -171,8 +173,6 @@ const Login = (props) => {
     onFailure={googleFailure}
     cookiePolicy={'single_host_origin'}
   />
-            </Link>
-          </div>
         </form>
       </div>
     </>
