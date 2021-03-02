@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { Link } from "react-router-dom"
-import { LoginUser } from "../../redux/actions/authActions"
+import { LoginUser ,GSignIn} from "../../redux/actions/authActions"
 import { ClearError } from "../../redux/actions/authActions"
+import GoogleSignIn from "../GoogleSignIn/GoogleSignIn"
+import {GoogleLogin} from 'react-google-login'
 const Login = (props) => {
   const auth = useSelector((state) => state.auth)
   const { error, isAuthenticated } = auth
@@ -18,6 +20,18 @@ const Login = (props) => {
     msg: "",
   })
 
+  const googleSuccess=async (res)=>{
+    console.log(res); 
+    const tokenId =res?.tokenId;
+    dispatch(GSignIn({tokenId}))
+  }
+  const googleFailure=()=>{
+    seterrorMsg({
+      status: true,
+    color: "danger",
+    msg: "Something went wrong!",
+    })
+  }
   const handleChange = (event) => {
     const { name, value } = event.target
 
@@ -147,6 +161,16 @@ const Login = (props) => {
               to="/register"
             >
               <p>Create an account!</p>
+              <div style={{fontWeight:'500'}}>Or</div>
+          <GoogleLogin 
+    clientId="17398736997-lr6su6hfveu96ir3vgviuqanmb51a9t7.apps.googleusercontent.com"
+    render={props=>(
+      <GoogleSignIn clicked={props.onClick}/>
+    )}
+    onSuccess={googleSuccess}
+    onFailure={googleFailure}
+    cookiePolicy={'single_host_origin'}
+  />
             </Link>
           </div>
         </form>

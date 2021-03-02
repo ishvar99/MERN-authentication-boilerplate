@@ -6,6 +6,9 @@ const crypto = require("crypto")
 const sgMail = require("@sendgrid/mail")
 const _ = require("lodash")
 const { sendEmail } = require("../utils/sendEmail")
+const {OAuth2Client} = require('google-auth-library');
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+const client = new OAuth2Client(CLIENT_ID);
 require("../services/cache")
 const {
   data: {
@@ -89,6 +92,35 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Invalid Credentials", 401))
   }
   sendTokenResponse(user, 200, res)
+})
+
+// @desc    Google Sign In
+// @route   POST /api/v1/auth/googlesignin
+// @access  public
+
+exports.googleSignIn = asyncHandler(async (req, res, next) => {
+  let {tokenId} = req.body;
+  console.log(tokenId);
+  const ticket = await client.verifyIdToken({
+          idToken: tokenId,
+          audience: CLIENT_ID,  
+      });
+  const payload = ticket?.getPayload();
+  if(payload?.email_verified){
+    const {email,name}=payload;
+    const currentUser = await User.findOne({email});
+    if(!currentUser){
+      const password=email+EMAIL_SECRET;
+      const newUser = await User.create({name,email,password,confirmed:true})
+      sendTokenResponse(newUser, 200, res)
+    }
+    else{
+      sendTokenResponse(currentUser,200,res)
+    }
+  }
+  else{
+    return next(new ErrorResponse("Unauthorized Access",401))
+  }
 })
 
 // @desc    Get User
